@@ -1,0 +1,83 @@
+package org.example;
+import java.util.ArrayList;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+public class studybot extends TelegramLongPollingBot {
+    @Override
+    public void onUpdateReceived(Update update) {
+        String command = update.getMessage().getText();
+        if (command.equals("/start")) {
+            String message = "Добро пожаловать," + update.getMessage().getFrom().getFirstName() + " вы зашли в наш бот, для того чтобы узнать все команды введите /menu.";
+            SendMessage response = new SendMessage();
+            response.setChatId(update.getMessage().getChatId().toString());
+            response.setText(message);
+            try {
+                execute(response);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+        if (command.equals("/menu")) {
+            String message = "Вы зашли в меню, все команды: \n /ins - инструкция по использаванию  \n /stat - посмотреть статистику. \n /raiseahand - поднять руку";
+            SendMessage response = new SendMessage();
+            response.setChatId(update.getMessage().getChatId().toString());
+            response.setText(message);
+            try {
+                execute(response);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+        if (command.equals("/ins")) {
+            String message = "Инструкция по исползованию: \n 1.Создайте чат с ботом. \n 2. Пользуйтесь командами бота.";
+            SendMessage response = new SendMessage();
+            response.setChatId(update.getMessage().getChatId().toString());
+            response.setText(message);
+            try {
+                execute(response);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+        if (command.equals("/raiseahand")) {
+            String name = update.getMessage().getFrom().getFirstName() + " " + update.getMessage().getFrom().getLastName();
+            String message = "Ученик " + name + " поднял руку.";
+            SendMessage response = new SendMessage();
+            response.setChatId(update.getMessage().getChatId().toString());
+            response.setText(message);
+            try {
+                execute(response);
+                StudyList.add(name);
+                System.out.println(StudyList.size());
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+        if (command.equals("/stat")) {
+            System.out.println("stat: user ");
+            System.out.println(update.getMessage().getFrom().getUserName());
+            for (String s : StudyList) {
+                System.out.println(s);
+                SendMessage response = new SendMessage();
+                response.setChatId(update.getMessage().getChatId().toString());
+                response.setText(s);
+                try {
+                    execute(response);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    @Override
+    public String getBotUsername() {
+        return "RoomStudyBot";
+    }
+    @Override
+    public String getBotToken() {
+        return "5598368974:AAEYBrzHs_UeBx9wCJgxYJx-CucLzLtzKXo";
+    }
+    ArrayList<String> StudyList = new ArrayList<>();
+}
